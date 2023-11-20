@@ -50,4 +50,12 @@ describe('GET /api/articles/:article_id', () => {
               })
         })
     });
+    test('400: should respond with error when given invalid data type as parameter', () => {
+        return request(app)
+        .get("/api/articles/banana")
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe("Bad request")
+        })
+    });
 });
