@@ -91,4 +91,12 @@ describe('GET /api/articles/:article_id/comments', () => {
         expect(body.msg).toBe("Bad request")
       })
     });
+    test('404: responds with error when article does not exist with given id, or does exist but has no comments', () => {
+      return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("Article does not exist or has no comments yet")
+      })
+    });
 });
