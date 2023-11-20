@@ -58,4 +58,12 @@ describe('GET /api/articles/:article_id', () => {
             expect(body.msg).toBe("Bad request")
         })
     });
+    test('404: should respond with error when article does not exist with the given id', () => {
+        return request(app)
+        .get("/api/articles/999")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("Article does not exist")
+        })
+    });
 });

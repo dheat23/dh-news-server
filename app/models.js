@@ -10,6 +10,10 @@ exports.selectAllTopics = () => {
 exports.selectArticleById = (id) => {
     return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [id])
     .then(({rows}) => {
-        return rows[0]
+        if (rows.length === 0) {
+            return Promise.reject({status: 404, msg: "Article does not exist"})
+        } else {
+            return rows[0]
+        }
     })
 }
