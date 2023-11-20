@@ -8,7 +8,7 @@ const {
   userData,
 } = require("../db/data/test-data");
 const db = require("../db/connection");
-const fs = require("fs/promises");
+require("jest-sorted")
 
 afterAll(() => {
   return db.end();
@@ -60,4 +60,27 @@ describe("GET /api", () => {
         }
       });
   });
+});
+
+describe('GET /api/articles/:article_id/comments', () => {
+    test('200: responds with array of comments for given article id with most recent comments first', () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments).toHaveLength(11);
+            expect(comments).toBeSortedBy("created_at", {descending: true})
+            comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 1
+                })
+            })
+        })
+    });
 });
