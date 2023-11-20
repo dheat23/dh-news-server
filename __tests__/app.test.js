@@ -8,7 +8,7 @@ const {
   userData,
 } = require("../db/data/test-data");
 const db = require("../db/connection");
-const fs = require("fs/promises");
+require("jest-sorted")
 
 afterAll(() => {
   return db.end();
@@ -60,4 +60,30 @@ describe("GET /api", () => {
         }
       });
   });
+});
+
+describe('GET /api/articles', () => {
+    test('200: should respond with an array of all article objects sorted by date created in descending order', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {
+           const {articles} = body;
+           expect(articles).toHaveLength(13);
+           expect(articles).toBeSortedBy("created_at", {descending: true})
+            articles.forEach(article => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(String)
+                });
+                expect(Object.keys(article)).not.toContain("body")
+            })
+        })
+    });
 });
