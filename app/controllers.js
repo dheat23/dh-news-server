@@ -1,4 +1,6 @@
-const { selectAllTopics, selectArticleById } = require("./models")
+const { selectAllTopics, selectArticleById } = require("./models");
+const fs = require("fs/promises")
+
 
 exports.getAllTopics = (req, res, next) => {
     selectAllTopics()
@@ -15,4 +17,11 @@ exports.getArticleById = (req, res, next) => {
         res.status(200).send({article})
     })
     .catch(next)
+};
+
+exports.getAllEndpoints = (req, res, next) => {
+    fs.readFile(`${__dirname}/../endpoints.json`)
+    .then((apiEndpoints) => {
+        res.status(200).send({apiEndpoints: JSON.parse(apiEndpoints)})
+    })
 }
