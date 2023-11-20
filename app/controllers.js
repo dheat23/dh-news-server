@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -24,4 +24,12 @@ exports.getAllEndpoints = (req, res, next) => {
     .then((apiEndpoints) => {
         res.status(200).send({apiEndpoints: JSON.parse(apiEndpoints)})
     })
+};
+
+exports.getAllArticles = (req, res, next) => {
+    selectAllArticles()
+    .then(articles => {
+        res.status(200).send({articles})
+    })
+    .catch(next)
 }
