@@ -234,6 +234,83 @@ describe('POST /api/articles/:article_id/comments', () => {
   });
 });
 
+describe('PATCH /api/articles/:article_id', () => {
+  test('200: responds with patched article', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({inc_votes: 1})
+    .expect(200)
+    .then(({body}) => {
+      const {updatedArticle} = body;
+      expect(updatedArticle).toMatchObject({
+        article_id: 1,
+        title: expect.any(String),
+        topic: expect.any(String),
+        author: expect.any(String),
+        body: expect.any(String),
+        article_img_url: expect.any(String),
+        created_at: expect.any(String),
+        votes: 101
+      })
+    })
+  });
+  test('200: responds with patched article when given negative inc_votes', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({inc_votes: -100})
+    .expect(200)
+    .then(({body}) => {
+      const {updatedArticle} = body;
+      expect(updatedArticle).toMatchObject({
+        article_id: 1,
+        title: expect.any(String),
+        topic: expect.any(String),
+        author: expect.any(String),
+        body: expect.any(String),
+        article_img_url: expect.any(String),
+        created_at: expect.any(String),
+        votes: 0
+      })
+    })
+  });
+  test('400: should respond with error when given invalid data type for article_id', () => {
+    return request(app)
+    .patch('/api/articles/banana')
+    .send({inc_votes: 1})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  });
+  test('400: should respond with error when given invalid data type for inc_votes', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({inc_votes: "banana"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  });
+  test('404: should respond with error when article_id does not exist', () => {
+    return request(app)
+    .patch('/api/articles/999')
+    .send({inc_votes: 1})
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("article not found")
+    })
+  });
+  test('400: should respond with error when given invalid patch object', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({username: "newUser"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Required fields missing")
+    })
+  });
+});
+
 describe('DELETE /api/comments/:comment_id', () => {
   test('204: should respond with 204 code upon successful comment deletion', () => {
     return request(app)
