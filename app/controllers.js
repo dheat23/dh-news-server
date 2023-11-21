@@ -1,5 +1,6 @@
-const { selectAllTopics, selectCommentsByArticleId } = require("./models");
-const fs = require("fs/promises")
+
+const { selectAllTopics, selectCommentsByArticleId, checkArticleExists } = require("./models");
+const fs = require("fs/promises");
 
 
 exports.getAllTopics = (req, res, next) => {
@@ -18,8 +19,12 @@ exports.getAllEndpoints = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params;
-    selectCommentsByArticleId(article_id)
-    .then(comments => {
+
+    const commentsPromises = [selectCommentsByArticleId(article_id), checkArticleExists(article_id)]
+    
+    Promise.all(commentsPromises)
+    .then(resolvedPromises => {
+        const comments = resolvedPromises[0]
         res.status(200).send({comments})
     })
     .catch(next)
