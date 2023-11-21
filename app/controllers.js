@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -45,4 +45,15 @@ exports.getCommentsByArticleId = (req, res, next) => {
         res.status(200).send({comments})
     })
     .catch(next)
+};
+
+exports.postComment = (req, res, next) => {
+  const {username, body} = req.body;
+  const {article_id} = req.params;
+  insertComment(username, body, article_id)
+  .then(comment => {
+    res.status(201).send({comment})
+  })
+  .catch(next)
+  
 }
