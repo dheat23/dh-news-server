@@ -172,3 +172,24 @@ describe('GET /api/articles/:article_id/comments', () => {
       })
     });
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+  test('201: should respond with the posted comment', () => {
+    const newComment = {username: "butter_bridge", body: "First!"}
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(newComment)
+    .expect(201)
+    .then(({body}) => {
+      const {comment} = body;
+      expect(comment).toMatchObject({
+        comment_id: expect.any(Number),
+        body: "First!",
+        votes: 0,
+        author: "butter_bridge",
+        article_id: 2,
+        created_at: expect.any(String)
+      })
+    })
+  });
+});
