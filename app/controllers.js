@@ -50,11 +50,8 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.postComment = (req, res, next) => {
   const {username, body} = req.body;
   const {article_id} = req.params;
-  const commentsPromises = [insertComment(username, body, article_id), checkArticleExists(article_id)];
-
-  Promise.all(commentsPromises)
-  .then(resolvedPromises => {
-    const comment = resolvedPromises[0]
+  insertComment(username, body, article_id)
+  .then(comment => {
     res.status(201).send({comment})
   })
   .catch(next)
