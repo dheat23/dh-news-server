@@ -172,3 +172,25 @@ describe('GET /api/articles/:article_id/comments', () => {
       })
     });
 });
+
+describe('PATCH /api/articles/:article_id', () => {
+  test('200: responds with patched article', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({inc_votes: 1})
+    .expect(200)
+    .then(({body}) => {
+      const {updatedArticle} = body;
+      expect(updatedArticle).toMatchObject({
+        article_id: 1,
+        title: expect.any(String),
+        topic: expect.any(String),
+        author: expect.any(String),
+        body: expect.any(String),
+        article_img_url: expect.any(String),
+        created_at: expect.any(String),
+        votes: 101
+      })
+    })
+  });
+});

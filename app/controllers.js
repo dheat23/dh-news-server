@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, updateArticle } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -43,6 +43,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
     .then(resolvedPromises => {
         const comments = resolvedPromises[0]
         res.status(200).send({comments})
+    })
+    .catch(next)
+}
+
+exports.patchArticle = (req, res, next) => {
+    const {article_id} = req.params;
+    const {inc_votes} = req.body;
+    updateArticle(article_id, inc_votes)
+    .then(updatedArticle => {
+        res.status(200).send({updatedArticle})
     })
     .catch(next)
 }
