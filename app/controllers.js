@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, deleteCommentSql } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -56,4 +56,13 @@ exports.postComment = (req, res, next) => {
   })
   .catch(next)
   
+}
+
+exports.deleteComment = (req, res, next) => {
+    const {comment_id} = req.params;
+    deleteCommentSql(comment_id)
+    .then(() => {
+        res.status(204).send()
+    })
+    .catch(next)
 }
