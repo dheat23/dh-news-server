@@ -55,6 +55,18 @@
       }
     ]
   },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a new comment for the article with the given article_id, serves the posted comment",
+    "queries": [],
+    "exampleResponse": {
+      "comment_id": 15,
+      "body": "First comment!",
+      "votes": 0,
+      "author": "butter_bridge",
+      "article_id": 2,
+      "created_at": "2018-05-30T15:59:13.341Z"
+    }
+  },
   "PATCH /api/articles/:article_id": {
     "description": "alters an article's vote count from given number and serves the updated article",
     "queries": [],
