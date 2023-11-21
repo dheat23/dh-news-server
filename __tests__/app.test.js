@@ -300,4 +300,13 @@ describe('PATCH /api/articles/:article_id', () => {
       expect(body.msg).toBe("article not found")
     })
   });
+  test('400: should respond with error when given invalid patch object', () => {
+    return request(app)
+    .patch('/api/articles/1')
+    .send({username: "newUser"})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Required fields missing")
+    })
+  });
 });
