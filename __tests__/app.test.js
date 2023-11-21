@@ -222,4 +222,14 @@ describe('POST /api/articles/:article_id/comments', () => {
       expect(body.msg).toBe("Required fields missing")
     })
   });
+  test('404: should respond with error when given non-existent username', () => {
+    const newComment = {username: "username", body: "First!"}
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not found")
+    })
+  });
 });
