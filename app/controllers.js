@@ -50,8 +50,11 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.patchArticle = (req, res, next) => {
     const {article_id} = req.params;
     const {inc_votes} = req.body;
-    updateArticle(article_id, inc_votes)
-    .then(updatedArticle => {
+
+    const articlesPromises = [updateArticle(article_id, inc_votes), checkArticleExists(article_id)]
+    Promise.all(articlesPromises)
+    .then(resolvedPromises => {
+        const updatedArticle = resolvedPromises[0]
         res.status(200).send({updatedArticle})
     })
     .catch(next)
