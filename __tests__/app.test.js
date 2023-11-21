@@ -310,3 +310,27 @@ describe('PATCH /api/articles/:article_id', () => {
     })
   });
 });
+
+describe('DELETE /api/comments/:comment_id', () => {
+  test('204: should respond with 204 code upon successful comment deletion', () => {
+    return request(app)
+    .delete('/api/comments/1')
+    .expect(204)
+  });
+  test('400: should respond with error when given invalid data type for comment_id', () => {
+    return request(app)
+    .delete('/api/comments/banana')
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  });
+  test('404: should respond with error when given non-existent comment_id', () => {
+    return request(app)
+    .delete('/api/comments/999')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("comment not found")
+    })
+  });
+});

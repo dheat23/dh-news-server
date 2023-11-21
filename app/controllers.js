@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -65,6 +65,16 @@ exports.patchArticle = (req, res, next) => {
     updateArticle(article_id, inc_votes)
     .then(updatedArticle => {
         res.status(200).send({updatedArticle})
+    })
+    .catch(next)
+}
+
+
+exports.deleteComment = (req, res, next) => {
+    const {comment_id} = req.params;
+    deleteCommentSql(comment_id)
+    .then(() => {
+        res.status(204).send()
     })
     .catch(next)
 }
