@@ -192,4 +192,34 @@ describe('POST /api/articles/:article_id/comments', () => {
       })
     })
   });
+  test('400: should respond with error when given invalid data type for article_id', () => {
+    const newComment = {username: "butter_bridge", body: "First!"}
+    return request(app)
+    .post('/api/articles/banana/comments')
+    .send(newComment)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  });
+  test('404: should respond with error when given non-existent article_id', () => {
+    const newComment = {username: "butter_bridge", body: "First!"}
+    return request(app)
+    .post('/api/articles/999/comments')
+    .send(newComment)
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("Not found")
+    })
+  });
+  test('400: should respond with error when username/body are null/not provided', () => {
+    const newComment = {username: "butter_bridge", body: null}
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(newComment)
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Required fields missing")
+    })
+  });
 });
