@@ -297,7 +297,7 @@ describe('PATCH /api/articles/:article_id', () => {
     .send({inc_votes: 1})
     .expect(404)
     .then(({body}) => {
-      expect(body.msg).toBe("not found")
+      expect(body.msg).toBe("article not found")
     })
   });
 });
