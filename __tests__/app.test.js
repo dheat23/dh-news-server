@@ -8,7 +8,7 @@ const {
   userData,
 } = require("../db/data/test-data");
 const db = require("../db/connection");
-require("jest-sorted")
+require("jest-sorted");
 
 afterAll(() => {
   return db.end();
@@ -124,4 +124,51 @@ describe('GET /api/articles', () => {
           })
       })
   });
+});
+describe('GET /api/articles/:article_id/comments', () => {
+    test('200: responds with array of comments for given article id with most recent comments first', () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments).toHaveLength(11);
+            expect(comments).toBeSortedBy("created_at", {descending: true})
+            comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 1
+                })
+            })
+        })
+    });
+    test('400: responds with error when given invalid data type as parameter', () => {
+      return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(400)
+      .then(({body}) => {
+        expect(body.msg).toBe("Bad request")
+      })
+    });
+    test('404: responds with error when article_id does not exist', () => {
+      return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("not found")
+      })
+    });
+    test('200: responds with empty array when article_id does exist but has no comments', () => {
+      return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({body}) => {
+        const {comments} = body
+        expect(comments).toEqual([])
+      })
+    });
 });
