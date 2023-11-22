@@ -85,5 +85,14 @@
     "description": "deletes the comment with the given id",
     "queries": [],
     "exampleResponse": null
+  },
+  "GET /api/users": {
+    "description": "servers an array of all users",
+    "queries": [],
+    "exampleResponse": [{
+      "username": "butter_bridge",
+      "name": "John Doe",
+      "avatur_url": "Link to an image.."
+    }]
   }
 }
