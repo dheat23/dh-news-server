@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql, selectAllUsers } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -77,6 +77,14 @@ exports.deleteComment = (req, res, next) => {
     deleteCommentSql(comment_id)
     .then(() => {
         res.status(204).send()
+    })
+    .catch(next)
+}
+
+exports.getAllUsers = (req, res, next) => {
+    selectAllUsers()
+    .then(users => {
+        res.status(200).send({users})
     })
     .catch(next)
 }
