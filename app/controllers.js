@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql, selectAllUsers } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql, selectAllUsers, checkTopicExists } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -28,9 +28,13 @@ exports.getAllEndpoints = (req, res, next) => {
 
 exports.getAllArticles = (req, res, next) => {
     const {topic} = req.query;
-
-    selectAllArticles(topic)
-    .then(articles => {
+    const articlesPromises = [selectAllArticles(topic)];
+    if (topic) {
+        articlesPromises.push(checkTopicExists(topic))
+    }
+    Promise.all(articlesPromises)
+    .then(resolvedPromises => {
+        const articles = resolvedPromises[0]
         res.status(200).send({articles})
     })
     .catch(next)

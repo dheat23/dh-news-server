@@ -105,3 +105,12 @@ exports.selectAllUsers = () => {
       return rows
   })
 }
+
+exports.checkTopicExists = (value) => {
+  const queryStr = `SELECT * FROM topics WHERE slug = $1;`;
+  return db.query(queryStr, [value]).then(({ rows }) => {
+    if (!rows.length) {
+      return Promise.reject({ status: 404, msg: "not found" });
+    }
+  });
+};
