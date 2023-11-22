@@ -153,12 +153,13 @@ describe("GET /api/articles", () => {
       expect(body.msg).toBe("not found")
     })
   });
-  test('404: should respond with an error when passed a topic that exists but has no corresponding articles', () => {
+  test('200: should respond with empty array when passed a topic that exists but has no corresponding articles', () => {
     return request(app)
     .get("/api/articles?topic=paper")
-    .expect(404)
+    .expect(200)
     .then(({body}) => {
-      expect(body.msg).toBe("no articles found")
+      const {articles} = body;
+      expect(articles).toEqual([])
     })
   });
 });

@@ -28,9 +28,7 @@ exports.selectAllArticles = (topic) => {
   }
   queryStr += `GROUP BY articles.article_id ORDER BY created_at DESC;`;
   return db.query(queryStr, queryParams).then(({ rows }) => {
-    if (!rows.length) {
-      return Promise.reject({status: 404, msg: "no articles found"})
-    } else return rows;
+     return rows;
   });
 };
 
