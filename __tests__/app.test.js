@@ -389,3 +389,14 @@ describe('GET /api/users', () => {
     })
   });
 });
+
+describe('Any other path ', () => {
+  test('404: should respond with error for any invalid path', () => {
+    return request(app)
+    .get('/banana')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("path not found")
+    })
+  });
+});

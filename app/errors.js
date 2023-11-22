@@ -21,4 +21,8 @@ exports.handleCustomErrors = (err, req, res, next) => {
 
 exports.handleServerErrors = (err, req, res, next) => {
     res.status(500).send({msg: "Internal Server Error"})
+};
+
+exports.handle404Errors = (req, res, next) => {
+    res.status(404).send({msg: 'path not found'})
 }
