@@ -124,3 +124,8 @@ exports.checkTopicExists = (value) => {
     }
   });
 };
+
+exports.selectUserByUsername = (username) => {
+  return db.query(`SELECT * FROM users WHERE users.username = $1`, [username])
+  .then(({rows}) => {return rows[0]})
+}

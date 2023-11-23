@@ -1,4 +1,4 @@
-const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql, selectAllUsers, checkTopicExists } = require("./models");
+const { selectAllTopics, selectArticleById, selectAllArticles, selectCommentsByArticleId, checkArticleExists, insertComment, updateArticle, deleteCommentSql, selectAllUsers, checkTopicExists, selectUserByUsername } = require("./models");
 const fs = require("fs/promises")
 
 
@@ -89,6 +89,15 @@ exports.getAllUsers = (req, res, next) => {
     selectAllUsers()
     .then(users => {
         res.status(200).send({users})
+    })
+    .catch(next)
+};
+
+exports.getUserByUsername = (req, res, next) => {
+    const {username} = req.params;
+    selectUserByUsername(username)
+    .then(user => {
+        res.status(200).send({user})
     })
     .catch(next)
 }
