@@ -506,4 +506,40 @@ describe('PATCH /api/comments/:comment_id', () => {
       })
     })
   });
+  test('400: should respond with error when given invalid data type for comment_id', () => {
+    return request(app)
+    .patch('/api/comments/banana')
+    .send({inc_votes: 1})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  });
+  test('400: should respond with error when given invalid data type for inc_votes', () => {
+    return request(app)
+    .patch('/api/comments/1')
+    .send({inc_votes: 'banana'})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request")
+    })
+  });
+  test('400: should respond with error when given incorrect patch obj', () => {
+    return request(app)
+    .patch('/api/comments/1')
+    .send({})
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Required fields missing")
+    })
+  });
+  test('404: should respond with error comment_id does not exist', () => {
+    return request(app)
+    .patch('/api/comments/999')
+    .send({inc_votes: 1})
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("comment not found")
+    })
+  });
 });

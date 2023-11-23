@@ -109,4 +109,5 @@ exports.patchCommentVotes = (req, res, next) => {
     .then(updatedComment => {
         res.status(200).send({updatedComment})
     })
+    .catch(next)
 }

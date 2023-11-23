@@ -141,6 +141,9 @@ exports.updateCommentVotes = (comment_id, inc_votes) => {
   WHERE comment_id = $1
   RETURNING *`, [comment_id, inc_votes])
   .then(({rows}) => {
+    if (!rows.length) {
+      return Promise.reject({status: 404, msg: "comment not found"})
+    }
     return rows[0]
   })
 }
