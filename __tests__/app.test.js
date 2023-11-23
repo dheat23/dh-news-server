@@ -101,8 +101,9 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("200: should respond with an array of all article objects sorted by date created in descending order", () => {
-    return request(app)
+  describe('no queries', () => {
+    test("200: should respond with an array of all article objects sorted by date created in descending order", () => {
+      return request(app)
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
@@ -123,9 +124,11 @@ describe("GET /api/articles", () => {
           expect(Object.keys(article)).not.toContain("body");
         });
       });
+    });
   });
-  test("200: should respond with filtered articles when passed valid topic query", () => {
-    return request(app)
+    describe('topic queries', () => {
+    test("200: should respond with filtered articles when passed valid topic query", () => {
+      return request(app)
       .get("/api/articles?topic=mitch")
       .expect(200)
       .then(({ body }) => {
@@ -144,30 +147,94 @@ describe("GET /api/articles", () => {
           });
         });
       });
-  });
-  test('404: should respond with an error when passed a topic that does not exist', () => {
-    return request(app)
-    .get("/api/articles?topic=banana")
-    .expect(404)
-    .then(({body}) => {
-      expect(body.msg).toBe("not found")
-    })
-  });
-  test('200: should respond with empty array when passed a topic that exists but has no corresponding articles', () => {
-    return request(app)
-    .get("/api/articles?topic=paper")
+    });
+    test('404: should respond with an error when passed a topic that does not exist', () => {
+      return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(404)
+      .then(({body}) => {
+        expect(body.msg).toBe("not found")
+      })
+    });
+    test('200: should respond with empty array when passed a topic that exists but has no corresponding articles', () => {
+      return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({body}) => {
+        const {articles} = body;
+        expect(articles).toEqual([])
+      })
+    });
+  })
+  describe('sort_by queries', () => {
+    test('200: should respond with sorted articles when passed a valid sort_by query', () => {
+      return request(app)
+      .get("/api/articles?sort_by=article_id")
     .expect(200)
     .then(({body}) => {
       const {articles} = body;
-      expect(articles).toEqual([])
+      expect(articles.length > 0).toBe(true)
+      expect(articles).toBeSortedBy("article_id", {descending: true})
     })
   });
+  test('400: should respond with error when passed invalid sort_by query', () => {
+    return request(app)
+    .get("/api/articles?sort_by=banana")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request: invalid sort_by query")
+    })
+  });
+});
+describe('order queries', () => {
+  test('200: should respond with ordered articles when passed a valid order query (defaults to sort by: created_at, order: desc)', () => {
+    return request(app)
+    .get("/api/articles?order=asc")
+    .expect(200)
+    .then(({body}) => {
+      const {articles} = body;
+      expect(articles.length > 0).toBe(true)
+      expect(articles).toBeSortedBy("created_at", {ascending: true})
+    })
+  });
+  test('400: should respond with error when given invalid order query', () => {
+    return request(app)
+    .get("/api/articles?order=banana")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request: invalid order query")
+    })
+  });
+});
+describe('multiple queries', () => {
+  test('200: should respond with correctly sorted and ordered array when given all queries', () => {
+    return request(app)
+    .get("/api/articles?topic=mitch&sort_by=article_id&order=asc")
+    .expect(200)
+    .then(({body}) => {
+      const {articles} = body;
+      expect(articles.length > 0).toBe(true)
+      expect(articles).toBeSortedBy("article_id", {ascending: true});
+      articles.forEach(article => {
+        expect(article).toMatchObject({topic: "mitch"})
+      })
+    })
+  });
+  test('400: should respond with error when one or more queries are invalid', () => {
+    return request(app)
+    .get("/api/articles?topic=mitch&sort_by=article_id&order=banana")
+    .expect(400)
+    .then(({body}) => {
+      expect(body.msg).toBe("Bad request: invalid order query")
+    })
+  });
+});
 });
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with array of comments for given article id with most recent comments first", () => {
     return request(app)
-      .get("/api/articles/1/comments")
-      .expect(200)
+    .get("/api/articles/1/comments")
+    .expect(200)
       .then(({ body }) => {
         const { comments } = body;
         expect(comments).toHaveLength(11);
