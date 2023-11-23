@@ -95,5 +95,14 @@
       "name": "John Doe",
       "avatur_url": "Link to an image.."
     }]
+  },
+  "GET /api/users/:username": {
+    "description": "servers a single user object for the given username",
+    "queries": [],
+    "exampleResponse": {
+      "username": "icellusedkars",
+      "name": "Sam",
+      "avatur_url": "Link to an image.."
+    }
   }
 }
