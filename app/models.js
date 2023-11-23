@@ -17,14 +17,26 @@ exports.selectArticleById = (id) => {
     })
 }
 
-exports.selectAllArticles = (topic) => {
+exports.selectAllArticles = (topic, sort_by = "created_at", order = "DESC") => {
   let queryStr = `SELECT articles.author, title, articles.article_id, articles.topic, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id `;
-  const queryParams = []
+  const queryParams = [];
+  const validSortBy = ['article_id', 'author', 'title', 'topic', 'created_at', 'votes', 'article_img_url', 'comment_count'];
+  const validOrder = ['ASC', 'DESC']
   if (topic) {
     queryStr += `WHERE articles.topic = $1 `;
     queryParams.push(topic)
   }
-  queryStr += `GROUP BY articles.article_id ORDER BY created_at DESC;`;
+  queryStr += `GROUP BY articles.article_id `;
+  if (!validSortBy.includes(sort_by)) {
+    return Promise.reject({status: 400, msg: "Bad request: invalid sort_by query"})
+  } else {
+    queryStr += `ORDER BY ${sort_by} `
+  }
+  if (!validOrder.includes(order.toUpperCase())) {
+    return Promise.reject({status: 400, msg: "Bad request: invalid order query"})
+  } else {
+    queryStr += `${order};`
+  }
   return db.query(queryStr, queryParams).then(({ rows }) => {
      return rows;
   });

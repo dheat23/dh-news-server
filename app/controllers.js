@@ -27,8 +27,8 @@ exports.getAllEndpoints = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-    const {topic} = req.query;
-    const articlesPromises = [selectAllArticles(topic)];
+    const {topic, sort_by, order} = req.query;
+    const articlesPromises = [selectAllArticles(topic, sort_by, order)];
     if (topic) {
         articlesPromises.push(checkTopicExists(topic))
     }
