@@ -467,3 +467,27 @@ describe('Any other path ', () => {
     })
   });
 });
+
+describe('GET /api/users/:username', () => {
+  test('200: should return user object when passed a valid username', () => {
+    return request(app)
+    .get('/api/users/butter_bridge')
+    .expect(200)
+    .then(({body}) => {
+      const {user} = body;
+      expect(user).toMatchObject({
+        username: 'butter_bridge',
+        avatar_url: expect.any(String),
+        name: expect.any(String)
+      })
+    })
+  });
+  test('404: should return error when username does not correspond to a user', () => {
+    return request(app)
+    .get('/api/users/banana')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("user not found")
+    })
+  });
+});
