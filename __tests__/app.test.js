@@ -482,4 +482,12 @@ describe('GET /api/users/:username', () => {
       })
     })
   });
+  test('404: should return error when username does not correspond to a user', () => {
+    return request(app)
+    .get('/api/users/banana')
+    .expect(404)
+    .then(({body}) => {
+      expect(body.msg).toBe("user not found")
+    })
+  });
 });
