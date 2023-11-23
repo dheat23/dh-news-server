@@ -491,3 +491,19 @@ describe('GET /api/users/:username', () => {
     })
   });
 });
+
+describe('PATCH /api/comments/:comment_id', () => {
+  test('200: should respond with updated comment', () => {
+    return request(app)
+    .patch('/api/comments/1')
+    .send({inc_votes: 1})
+    .expect(200)
+    .then(({body}) => {
+      const {updatedComment} = body;
+      expect(updatedComment).toMatchObject({
+        comment_id: 1,
+        votes: 17
+      })
+    })
+  });
+});
