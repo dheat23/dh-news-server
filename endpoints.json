@@ -119,5 +119,27 @@
         "article_id": 1
       }
     ]
+  },
+  "POST /api/articles": {
+    "description": "posts a new article and serves the posted article",
+    "queries": [],
+    "body": {
+      "author": "butter_bridge",
+      "title": "Building Tests",
+      "body": "if at first you don't fail, try and try again",
+      "topic": "coding",
+      "article_img_url": "link to an image"
+    },
+    "exampleResponse": {
+      "article_id": 45,
+      "author": "butter_bridge",
+      "title": "Building Tests",
+      "body": "if at first you don't fail, try and try again",
+      "topic": "coding",
+      "created_at": "2023-11-09T20:11:00.000Z",
+      "votes": 0,
+      "article_img_url": "link to an image",
+      "comment_count": 0
+    }
   }
 }
