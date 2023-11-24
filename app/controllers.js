@@ -113,12 +113,10 @@ exports.patchCommentVotes = (req, res, next) => {
 };
 
 exports.postArticle = (req, res, next) => {
-    const {author, title, body, topic} = req.body;
-    insertArticle(author, title, body, topic)
+    const {author, title, body, topic, article_img_url} = req.body;
+    insertArticle(author, title, body, topic, article_img_url)
     .then(article => {
         res.status(201).send({article})
     })
-    .catch(err => {
-        console.log(err)
-    })
+    .catch(next)
 }

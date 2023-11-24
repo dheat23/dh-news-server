@@ -148,12 +148,20 @@ exports.updateCommentVotes = (comment_id, inc_votes) => {
   })
 };
 
-exports.insertArticle = (author, title, body, topic) => {
-  return db.query(`INSERT INTO articles
-  (author, title, body, topic)
-  VALUES
-  ($1, $2, $3, $4)
-  RETURNING article_id;`, [author, title, body, topic])
+exports.insertArticle = (author, title, body, topic, article_img_url) => {
+  let queryStr = `INSERT INTO articles
+  (author, title, body, topic`
+  const queryParams = [author, title, body, topic]
+  if (article_img_url) {
+    queryParams.push(article_img_url);
+    queryStr += `, article_img_url)
+    VALUES
+    ($1, $2, $3, $4, $5)`
+  } else {
+    queryStr += `) VALUES ($1, $2, $3, $4)`
+  }
+  queryStr += ` RETURNING *;`
+  return db.query(queryStr, queryParams)
   .then(({rows}) => {
     const {article_id} = rows[0];
     return this.selectArticleById(article_id)
