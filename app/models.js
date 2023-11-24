@@ -146,4 +146,16 @@ exports.updateCommentVotes = (comment_id, inc_votes) => {
     }
     return rows[0]
   })
+};
+
+exports.insertArticle = (author, title, body, topic) => {
+  return db.query(`INSERT INTO articles
+  (author, title, body, topic)
+  VALUES
+  ($1, $2, $3, $4)
+  RETURNING article_id;`, [author, title, body, topic])
+  .then(({rows}) => {
+    const {article_id} = rows[0];
+    return this.selectArticleById(article_id)
+  })
 }

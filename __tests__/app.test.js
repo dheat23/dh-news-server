@@ -543,3 +543,32 @@ describe('PATCH /api/comments/:comment_id', () => {
     })
   });
 });
+
+describe('POST /api/articles', () => {
+  test('201: should respond with newly added article', () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Building Tests",
+      body: "if at first you don't fail, try and try again",
+      topic: "cats",
+    }
+    return request(app)
+    .post('/api/articles')
+    .send(newArticle)
+    .expect(201)
+    .then(({body}) => {
+      const {article} = body;
+      expect(article).toEqual({
+        article_id: expect.any(Number),
+        author: "butter_bridge",
+        title: "Building Tests",
+        body: "if at first you don't fail, try and try again",
+        topic: "cats",
+        votes: 0,
+        article_img_url: 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700',
+        created_at: expect.any(String),
+        comment_count: "0"
+      })
+    })
+  });
+});
