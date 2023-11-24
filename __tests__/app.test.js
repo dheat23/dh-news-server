@@ -543,3 +543,88 @@ describe('PATCH /api/comments/:comment_id', () => {
     })
   });
 });
+
+describe('POST /api/articles', () => {
+  test('201: should respond with newly added article', () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Building Tests",
+      body: "if at first you don't fail, try and try again",
+      topic: "cats"
+    }
+    return request(app)
+    .post('/api/articles')
+    .send(newArticle)
+    .expect(201)
+    .then(({body}) => {
+      const {article} = body;
+      expect(article).toEqual({
+        article_id: expect.any(Number),
+        author: "butter_bridge",
+        title: "Building Tests",
+        body: "if at first you don't fail, try and try again",
+        topic: "cats",
+        votes: 0,
+        article_img_url: 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700',
+        created_at: expect.any(String),
+        comment_count: "0"
+      })
+    })
+  });
+  test('201: should respond with newly added article when article_img_url is provided', () => {
+    const newArticle = {
+      author: "butter_bridge",
+      title: "Building Tests",
+      body: "if at first you don't fail, try and try again",
+      topic: "cats",
+      article_img_url: "link to an image"
+    }
+    return request(app)
+    .post('/api/articles')
+    .send(newArticle)
+    .expect(201)
+    .then(({body}) => {
+      const {article} = body;
+      expect(article).toEqual({
+        article_id: expect.any(Number),
+        author: "butter_bridge",
+        title: "Building Tests",
+        body: "if at first you don't fail, try and try again",
+        topic: "cats",
+        votes: 0,
+        article_img_url: 'link to an image',
+        created_at: expect.any(String),
+        comment_count: "0"
+      })
+    })
+  });
+  test("400: should respond with error when post obj is missing required field", () => {
+    const newArticle = {
+      title: "Building Tests",
+      body: "if at first you don't fail, try and try again",
+      topic: "cats",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Required fields missing");
+      });
+  });
+  test("404: should respond with error when author does not correspond to a user", () => {
+    const newArticle = {
+      author: "test_user",
+      title: "Building Tests",
+      body: "if at first you don't fail, try and try again",
+      topic: "cats",
+    };
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
