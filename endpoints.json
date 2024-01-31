@@ -59,6 +59,7 @@
   "POST /api/articles/:article_id/comments": {
     "description": "posts a new comment for the article with the given article_id, serves the posted comment",
     "queries": [],
+    "exampleRequest": { "username": "butter_bridge", "body": "First comment!" },
     "exampleResponse": {
       "comment_id": 15,
       "body": "First comment!",
@@ -71,6 +72,7 @@
   "PATCH /api/articles/:article_id": {
     "description": "alters an article's vote count from given number and serves the updated article",
     "queries": [],
+    "exampleRequest": { "inc_votes": 1 },
     "exampleResponse": {
       "article_id": 1,
       "title": "Upvotes and why they matter to me",
@@ -108,7 +110,7 @@
   "PATCH /api/comments/:comment_id": {
     "description": "alters a comment's vote count from the given comment_id and inc_votes",
     "queries": [],
-    "body": {"inc_votes": "number of new votes"},
+    "exampleRequest": {"inc_votes": 1},
     "exampleResponse": [
       {
         "comment_id": 26,
@@ -123,7 +125,7 @@
   "POST /api/articles": {
     "description": "posts a new article and serves the posted article",
     "queries": [],
-    "body": {
+    "exampleRequest": {
       "author": "butter_bridge",
       "title": "Building Tests",
       "body": "if at first you don't fail, try and try again",
