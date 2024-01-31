@@ -4,7 +4,14 @@ A version of this API is hosted at https://dh-news-server.onrender.com/api
 
 ## Summary ##
 
-This repo serves as the backend API for a news website, with functionality like getting articles and comments, posting and deleting comments, etc. See some example requests and responses in the [Usage](#usage) section.
+Northcoders News API serves as the backend for a news website. The project consists of an API built using ExpressJS, which interacts with and serves content from a PostgreSQL database. The API was built using a TDD approach, with Jest and Supertest used for unit and integration testing. Husky was used for pre-commit hooks to ensure only tested code is committed. Functionality includes: 
+* Getting an array of articles, with filtering and ordering queries
+* Getting individual articles and patching the number of votes
+* Getting an array of comments for an individual article and patching the number of votes
+* Getting an array of users, or an individual user
+* Getting an array of topics
+
+See the full list of API endpoints in the [Usage](#usage) section.
 
 ## Getting Started ##
 
@@ -44,25 +51,49 @@ In order to connect to the two databases in this repo locally, you must create t
 echo 'PGDATABASE=nc_news' > .env.development
 echo 'PGDATABASE=nc_news_test' > .env.test
 ```
+### Start Server ###
 
-## Testing ##
+To start the server locally, run:
 
-To run the utils and app tests (the test database is re-seeded for each test so no need to seed beforehand):
+```
+npm start
+```
+
+This starts the server on port 9090, with the API interacting with the dev database; You can test the API by making requests to http://localhost:9090/ using a client like [Insomnia](https://insomnia.rest/). 
+### Testing ###
+
+To run the utils and app test suites (the test database is re-seeded for each test so no need to seed beforehand):
 ```
 npm test
 ```
 ## Usage ##
 
-This section details a few of the API endpoints with example responses. For a full list view the endpoints.json file or make a GET request to /api:
-
+This section lists all API endpoints. To view possible queries and the structure of request and response bodies, view the endpoints.json file or make a GET request to /api:
+* **GET /api**
+    * Serves a JSON representation of all available endpoints
+* **GET /api/topics**
+    * Serves an array of all topics
 * **GET /api/articles** 
     * Serves an array of all articles
-* **GET /api/comments** 
-    * Serves an array of all comments
+* **POST /api/articles**
+    * Posts and serves a new article
+* **GET /api/articles/:article_id**
+    * Serves a single article with the given article_id
+* **PATCH /api/articles/:article_id**
+    * Patches an article's vote count and serves the updated article
 * **GET /api/articles/:article_id/comments** 
-    * Serves an array of comments with the given article ID
+    * Serves an array of all comments with the given article_id
 * **POST /api//articles/:article_id/comments** 
-    * Posts a new comment with the given article ID
+    * Posts and serves a new comment with the given article_id
+* **PATCH /api/comments/:comment_id**
+    * Patches a comment's vote count and serves the updated comment
 * **DELETE /api/comments/:comment_id**
-    * Deletes the comment with the given comment ID
+    * Deletes the comment with the given comment_id
+* **GET /api/users**
+    * Serves an array of all users
+* **GET /api/users/:username**
+    * Serves a single user with the given username
 
+## Acknowledgements
+
+This project was created as part of the backend block of the [Northcoders](https://northcoders.com/) Software Development bootcamp. Thank you to everyone at Northcoders!
